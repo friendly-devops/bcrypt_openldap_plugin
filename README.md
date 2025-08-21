@@ -7,7 +7,7 @@ The bcrypt_openldap_plugin repo is to provide a plugin module for the purposes o
 Build and install OpenLDAP from 
 with the below arguments:
 
-./configure --prefix=/usr/local --enable-modules
+    ./configure --prefix=/usr/local --enable-modules
     make depend
     sudo make install
 
@@ -20,10 +20,13 @@ with the below arguments:
 
 ### Add Module to Slapd Configuration
 add the line:
+
     moduleload /usr/local/libexec/openldap/bcrypt_plugin.so
     password-hash {BCRYPT}
+
 Add a integer between 4 and 31 as an argument to the end of the moduleload line to alter the workfactor the default is set to 8.
 Restart slapd
+
     sudo systemctl restart slapd
 
 ### Test Hash Generation
