@@ -6,6 +6,7 @@ The bcrypt_openldap_plugin repo is to provide a plugin module for the purposes o
 ### Build OpenLDAP
 Build and install OpenLDAP from 
 with the below arguments:
+
 ./configure --prefix=/usr/local --enable-modules
     make depend
     sudo make install
