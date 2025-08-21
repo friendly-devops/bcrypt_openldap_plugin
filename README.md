@@ -2,6 +2,7 @@
 The bcrypt_openldap_plugin repo is to provide a plugin module for the purposes of enabling the ability to encrypt and decrypt bcrypt encoding in OpenLDAP 
 
 ## Build details
+
 ### Build OpenLDAP
 Build and install OpenLDAP from 
 with the below arguments:
