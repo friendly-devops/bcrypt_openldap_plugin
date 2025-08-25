@@ -33,4 +33,4 @@ Restart slapd
 
 ### Test Hash Generation
     slappasswd -o module-path=/usr/local/libexec/openldap -o module-load="bcrypt_plugin.la <int>" -h {BCRYPT} -s secret
-Set the workfactor in the above command by changing the <int> to an integer from 4 to 31
+Set the workfactor in the above command by changing the <int> to an integer from 4 to 31 or removing it to use the default workfactor
