@@ -8,27 +8,28 @@ Build and install OpenLDAP from https://github.com/openldap/openldap
 
 with the below arguments:
 
-    ./configure --prefix=/usr/local --enable-modules
+    ./configure --enable-modules --enable-slapd
     make depend
-    sudo make install
+    make
+    sudo su root -c 'make install'
 
 ### Build Bcrypt Plugin Module
     cd contrib/slapd-modules/passwd
-    git clone https://github.com/friendly-devops/bcrypt_openldap_plugin?tab=GPL-2.0-1-ov-file bcrypt
-    cd bcrypt
+    git clone https://github.com/friendly-devops/bcrypt_openldap_plugin.git
+    cd bcrypt_openldap_plugin
     make
     sudo make install
 
 ### Add Module to Slapd Configuration
 add the line:
 
-    moduleload /usr/local/libexec/openldap/bcrypt_plugin.so
+    moduleload bcrypt_plugin.la
     password-hash {BCRYPT}
 
 Add a integer between 4 and 31 as an argument to the end of the moduleload line to alter the workfactor the default is set to 8.
 Restart slapd
 
-    sudo systemctl restart slapd
+    sudo /usr/local/libexec/slapd
 
 ### Test Hash Generation
     slappasswd -o module-path=/usr/local/libexec/openldap -o module-load="bcrypt_plugin.la <int>" -h {BCRYPT} -s secret
