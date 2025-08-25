@@ -8,14 +8,14 @@
 
 #include "crypt_blowfish.h"
 
-#define BCRYPT_DEFAULT_PREFIX		    "$2b"
+#define BCRYPT_DEFAULT_PREFIX    "$2b"
 
 #define DEFAULT_WORKFACTOR        8
 #define MIN_WORKFACTOR            4
 #define MAX_WORKFACTOR           32
 
 #define SALT_SIZE                16
-#define SALT_OUTPUT_SIZE	        (7 + 22 + 1)
+#define SALT_OUTPUT_SIZE	     (7 + 22 + 1)
 #define OUTPUT_SIZE              (7 + 22 + 31 + 1)
 
 #ifdef SLAPD_BCRYPT_DEBUG
@@ -36,7 +36,7 @@ static int generate_hash(
 {
 
     char bcrypthash[OUTPUT_SIZE];
-    char ldaphashformat[OUTPUT_SIZE + scheme->bv_len + 1];
+    int total_size = OUTPUT_SIZE + scheme->bv_len;
     char *temp_hash;
     char saltinput[SALT_SIZE];
     char gensaltoutput[SALT_OUTPUT_SIZE];
@@ -74,14 +74,14 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    temp_hash = hash->bv_val = ldaphashformat;
+    hash->bv_len = total_size;
+    temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
     AC_MEMCPY(temp_hash, scheme->bv_val, scheme->bv_len);
     temp_hash += schem->bv_len;
 
     AC_MEMCPY(temp_hash, bycrpthash, BYCRYPT_OUTPUT_SIZE);
 
-    hash->bv_len = sizeof(ldaphashformat);
     hash->bv_val[hash->bv_len] = '\0';
 
     return LUTIL_PASSWD_OK;
@@ -110,7 +110,7 @@ static int chk_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    if (!memcmp((char *) passwd-bv_val, bcrypthash, OUTPUT_SIZE)) {
+    if (!memcmp((char *) passwd->bv_val, bcrypthash, OUTPUT_SIZE)) {
         return LUTIL_PASSWD_OK;
     }
     else {
