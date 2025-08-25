@@ -78,9 +78,9 @@ static int generate_hash(
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
     AC_MEMCPY(temp_hash, scheme->bv_val, scheme->bv_len);
-    temp_hash += schem->bv_len;
+    temp_hash += scheme->bv_len;
 
-    AC_MEMCPY(temp_hash, bycrpthash, BYCRYPT_OUTPUT_SIZE);
+    AC_MEMCPY(temp_hash, bcrypthash, OUTPUT_SIZE);
 
     hash->bv_val[hash->bv_len] = '\0';
 
@@ -130,7 +130,7 @@ int init_module(int argc, char *argv[]) {
     if (argc > 0) {
         _DEBUG("Overwriting default work factor with provided work factor argument\n")
         int factor = atoi(argv[0]);
-        if (factor >= MIN_WORKFACTOR && factor <= MAX_FACTOR) {
+        if (factor >= MIN_WORKFACTOR && factor <= MAX_WORKFACTOR) {
             workfactor = factor;
         }
     }
