@@ -13,6 +13,7 @@
 #define DEFAULT_WORKFACTOR        8
 #define MIN_WORKFACTOR            4
 #define MAX_WORKFACTOR           32
+#define OUTPUT_ELEMENT_SIZE       2
 
 #define SALT_SIZE                16
 #define SALT_OUTPUT_SIZE	     (7 + 22 + 1)
@@ -35,12 +36,15 @@ static int update_hash(
 {
     char *temp_hash;
     int total_size = OUTPUT_SIZE + scheme->bv_len;
-    const char *hashstring[scheme->bv_val,bcrypthash];
+    char *hashstring[OUTPUT_ELEMENT_SIZE];
+
+    hashstring[0] = scheme->bv_val;
+    hashstring[1] = bcrypthash;
     
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
-    for (int i=0; i < sizeof(hashstring) < 2; i++)
+    for (int i=0; i < sizeof(hashstring) < OUTPUT_ELEMENT_SIZE; i++)
     {
         AC_MEMCPY(temp_hash, hashstring[i], sizeof(hashstring[i]));
         temp_hash += sizeof(hashstring[i]);
