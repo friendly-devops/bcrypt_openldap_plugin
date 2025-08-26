@@ -13,6 +13,7 @@
 #define DEFAULT_WORKFACTOR        8
 #define MIN_WORKFACTOR            4
 #define MAX_WORKFACTOR           32
+#define OUTPUT_ELEMENT_SIZE               2
 
 #define SALT_SIZE                16
 #define SALT_OUTPUT_SIZE	     (7 + 22 + 1)
@@ -77,23 +78,18 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    char *test_val[2] = { scheme->bv_val, bcrypthash};
-    int test_len[2] = {scheme->bv_len, OUTPUT_SIZE};
+    char *hash_elmnt_val[OUTPUT_ELEMENT_SIZE] = { scheme->bv_val, bcrypthash};
+    int hash_elmnt_len[OUTPUT_ELEMENT_SIZE] = {scheme->bv_len, OUTPUT_SIZE};
+
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
-    for (int i=0; i < 2; i++){
-        AC_MEMCPY(temp_hash, test_val[i], test_len[i]);
-        temp_hash += test_len[i];
+    for (int i=0; i < OUTPUT_ELEMENT_SIZE; i++)
+    {
+        AC_MEMCPY(temp_hash, hash_elmnt_val[i], test_len[i]);
+        temp_hash += hash_elmnt_len[i];
     }
-    /*
-    AC_MEMCPY(temp_hash, scheme->bv_val, scheme->bv_len);
-    temp_hash += scheme->bv_len;
 
-    AC_MEMCPY(temp_hash, bcrypthash, OUTPUT_SIZE);
-
-    */
-    //hash->bv_val[hash->bv_len] = '\0';
     temp_hash = '\0';
 
     return LUTIL_PASSWD_OK;
