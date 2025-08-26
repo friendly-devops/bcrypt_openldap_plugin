@@ -109,7 +109,7 @@ static int generate_hash(
     if (!_update_hash(
             hash,
             scheme,
-            *bcrypthash))
+            &bcrypthash))
     {
         BCRYPT_DEBUG("Hash failed to update\n");
         return LUTIL_PASSWD_ERR;
