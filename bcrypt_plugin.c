@@ -93,7 +93,8 @@ static int generate_hash(
     AC_MEMCPY(temp_hash, bcrypthash, OUTPUT_SIZE);
 
     */
-    hash->bv_val[hash->bv_len] = '\0';
+    //hash->bv_val[hash->bv_len] = '\0';
+    temp_hash = '\0'
 
     return LUTIL_PASSWD_OK;
 
