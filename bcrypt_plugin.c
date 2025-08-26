@@ -32,7 +32,7 @@ static int workfactor;
 static int _update_hash(
     struct berval *hash,
     const struct berval *scheme,
-    char (*) bcrypthash)
+    char *bcrypthash)
 {
     char *temp_hash;
     int total_size = OUTPUT_SIZE + scheme->bv_len;
@@ -109,7 +109,7 @@ static int generate_hash(
     if (!_update_hash(
             hash,
             scheme,
-            &bcrypthash))
+            *bcrypthash))
     {
         BCRYPT_DEBUG("Hash failed to update\n");
         return LUTIL_PASSWD_ERR;
