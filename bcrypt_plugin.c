@@ -29,36 +29,6 @@
 static struct berval bcryptscheme = BER_BVC("{BCRYPT}");
 static int workfactor;
 
-static int _update_hash(
-    struct berval *hash,
-    const struct berval *scheme,
-    char (*)bcrypthash)
-{
-    char *temp_hash;
-    int total_size = OUTPUT_SIZE + scheme->bv_len;
-    char *hashstring[OUTPUT_ELEMENT_SIZE];
-
-    hashstring[0] = scheme->bv_val;
-    hashstring[1] = bcrypthash;
-    
-    hash->bv_len = total_size;
-    temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
-
-    for (int i=0; OUTPUT_ELEMENT_SIZE < sizeof(hashstring) > i; i++)
-    {
-        AC_MEMCPY(temp_hash, hashstring[i], sizeof(hashstring[i]));
-        temp_hash += sizeof(hashstring[i]);
-    }
-    
-    if (hash->bv_val == NULL) {
-        return 0;
-    }
-
-    temp_hash = '\0';
-
-    return LUTIL_PASSWD_OK;
-}
-
 static int generate_hash(
     const struct berval *scheme,
     const struct berval *passwd,
@@ -68,6 +38,8 @@ static int generate_hash(
 
     BCRYPT_DEBUG("Initializing bcrypt hash generation\n");
     char bcrypthash[OUTPUT_SIZE];
+    char *temp_hash;
+    int total_size = OUTPUT_SIZE + scheme->bv_len;
     char saltinput[SALT_SIZE];
     char gensaltoutput[SALT_OUTPUT_SIZE];
     char *userpass = passwd->bv_val;
@@ -106,14 +78,25 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    if (!_update_hash(
-            hash,
-            scheme,
-            &bcrypthash))
+    char *hashstring[OUTPUT_ELEMENT_SIZE];
+
+    hashstring[0] = scheme->bv_val;
+    hashstring[1] = bcrypthash;
+    
+    hash->bv_len = total_size;
+    temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
+
+    for (int i=0; i < OUTPUT_ELEMENT_SIZE; i++)
     {
-        BCRYPT_DEBUG("Hash failed to update\n");
-        return LUTIL_PASSWD_ERR;
+        AC_MEMCPY(temp_hash, hashstring[i], sizeof(hashstring[i]));
+        temp_hash += sizeof(hashstring[i]);
     }
+    
+    if (hash->bv_val == NULL) {
+        return 0;
+    }
+
+    temp_hash = '\0';
 
     return LUTIL_PASSWD_OK;
 }
