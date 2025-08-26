@@ -30,7 +30,7 @@ static int workfactor;
 
 static int update_hash(
     struct berval *hash,
-    const struct *scheme,
+    const struct berval *scheme,
     char bcrypthash)
 {
     char *temp_hash;
@@ -40,7 +40,7 @@ static int update_hash(
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
-    for (i=0; i < sizeof(hashstring) < 2; i++)
+    for (int i=0; i < sizeof(hashstring) < 2; i++)
     {
         AC_MEMCPY(temp_hash, hashstring[i], sizeof(hashstring[i]));
         temp_hash += sizeof(hashstring[i]);
