@@ -32,7 +32,7 @@ static int workfactor;
 static int update_hash(
     struct berval *hash,
     const struct berval *scheme,
-    (char *) bcrypthash)
+    char (*) bcrypthash)
 {
     char *temp_hash;
     int total_size = OUTPUT_SIZE + scheme->bv_len;
