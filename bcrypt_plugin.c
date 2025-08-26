@@ -94,7 +94,7 @@ static int generate_hash(
 
     */
     //hash->bv_val[hash->bv_len] = '\0';
-    temp_hash = '\0'
+    temp_hash = '\0';
 
     return LUTIL_PASSWD_OK;
 
