@@ -87,7 +87,7 @@ static int generate_hash(
     AC_MEMCPY(temp_hash, test[0], sizeof(test[0]));
     temp_hash += scheme->bv_len;
 
-    AC_MEMCPY(temp_hash, bcrypthash, OUTPUT_SIZE);
+    AC_MEMCPY(temp_hash, test[1], OUTPUT_SIZE);
 
     hash->bv_val[hash->bv_len] = '\0';
 
