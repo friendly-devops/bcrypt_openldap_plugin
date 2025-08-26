@@ -84,7 +84,7 @@ static int generate_hash(
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
-    AC_MEMCPY(temp_hash, test[0], scheme->bv_val);
+    AC_MEMCPY(temp_hash, test[0], scheme->bv_len);
     temp_hash += scheme->bv_len;
 
     AC_MEMCPY(temp_hash, test[1], sizeof(test[1]));
