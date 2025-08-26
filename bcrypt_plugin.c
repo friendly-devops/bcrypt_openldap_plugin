@@ -84,7 +84,7 @@ static int generate_hash(
     test[0] = scheme->bv_val;
     test[1] = bcrypthash;
 
-    for (int i=0; i < 1; i++)
+    for (int i=0; i < 2; i++)
     {
         AC_MEMCPY(temp_hash, test[i], sizeof(test[i]));
         temp_hash += sizeof(test[i]);
