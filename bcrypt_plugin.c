@@ -77,18 +77,22 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    char *test[0];
-    test[0] = scheme->bv_val;
-    test[1] = bcrypthash;
-
+    char *test_val[2] = { scheme->bv_val, bcrypthash};
+    int test_len[2] = {scheme->bv_len, OUTPUT_SIZE}
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
-    AC_MEMCPY(temp_hash, test[0], scheme->bv_len);
+    for (int i=0; i < 2; i++){
+        AC_MEMCPY(temp_hash, test_val[i], test_len[i]);
+        temp_hash += test_len[i];
+    }
+    /*
+    AC_MEMCPY(temp_hash, scheme->bv_val, scheme->bv_len);
     temp_hash += scheme->bv_len;
 
-    AC_MEMCPY(temp_hash, test[1], sizeof(*test[1]));
+    AC_MEMCPY(temp_hash, bcrypthash, OUTPUT_SIZE);
 
+    */
     hash->bv_val[hash->bv_len] = '\0';
 
     return LUTIL_PASSWD_OK;
