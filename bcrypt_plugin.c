@@ -13,7 +13,6 @@
 #define DEFAULT_WORKFACTOR        8
 #define MIN_WORKFACTOR            4
 #define MAX_WORKFACTOR           32
-#define OUTPUT_ELEMENT_SIZE       2
 
 #define SALT_SIZE                16
 #define SALT_OUTPUT_SIZE	     (7 + 22 + 1)
@@ -38,8 +37,8 @@ static int generate_hash(
 
     BCRYPT_DEBUG("Initializing bcrypt hash generation\n");
     char bcrypthash[OUTPUT_SIZE];
-    char *temp_hash;
     int total_size = OUTPUT_SIZE + scheme->bv_len;
+    char *temp_hash;
     char saltinput[SALT_SIZE];
     char gensaltoutput[SALT_OUTPUT_SIZE];
     char *userpass = passwd->bv_val;
@@ -78,28 +77,29 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    char *hashstring[OUTPUT_ELEMENT_SIZE];
-
-    hashstring[0] = scheme->bv_val;
-    hashstring[1] = &bcrypthash[0];
-    
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
-    for (int i=0; i < OUTPUT_ELEMENT_SIZE; i++)
+    char *test[2];
+    test[0] = scheme->bv_val;
+    test[1] = bcrypthash;
+
+    for (int i=0; i < 1; i++)
     {
-        AC_MEMCPY(temp_hash, hashstring[i], sizeof(hashstring[i]));
-        temp_hash += sizeof(hashstring[i]);
+        AC_MEMCPY(temp_hash, test[i], sizeof(test[i]));
+        temp_hash += sizeof(test[i]);
     }
-    
-    if (hash->bv_val == NULL) {
-        return 0;
-    }
+    /*
+    AC_MEMCPY(temp_hash, scheme->bv_val, scheme->bv_len);
+    temp_hash += scheme->bv_len;
+
+    AC_MEMCPY(temp_hash, bcrypthash, OUTPUT_SIZE);
+    */
 
     hash->bv_val[hash->bv_len] = '\0';
-    //temp_hash = '\0';
 
     return LUTIL_PASSWD_OK;
+
 }
 
 static int chk_hash(
