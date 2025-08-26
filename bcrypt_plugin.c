@@ -78,7 +78,7 @@ static int generate_hash(
     }
 
     char *test_val[2] = { scheme->bv_val, bcrypthash};
-    int test_len[2] = {scheme->bv_len, OUTPUT_SIZE}
+    int test_len[2] = {scheme->bv_len, OUTPUT_SIZE};
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
