@@ -6,6 +6,9 @@ The bcrypt_openldap_plugin repo is to provide a plugin module for the purposes o
 ### Build OpenLDAP
 Build and install OpenLDAP from https://github.com/openldap/openldap
 
+    git clone https://www.github.com/openldap/openldap.git
+    cd openldap
+
 with the below arguments:
 
     ./configure --enable-modules --enable-slapd

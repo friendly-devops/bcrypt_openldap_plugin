@@ -20,9 +20,9 @@
 
 #ifdef SLAPD_BCRYPT_DEBUG
 #include <stdio.h>
-#define _DEBUG(args...) printf(args)
+#define BCRYPT_DEBUG(fmt, args...) printf("DEBUG: %s:%s:%d: "fmt, __FILE__, __FUNCTION__, __LINE__, args)
 #else
-#define _DEBUG(args...)
+#define BCRYPT_DEBUG(fmt, args...)
 #endif
 
 static struct berval bcryptscheme = BER_BVC("{BCRYPT}");
@@ -35,6 +35,7 @@ static int generate_hash(
     const char **text) 
 {
 
+    BCRYPT_DEBUG("Initializing bcrypt hash generation\n");
     char bcrypthash[OUTPUT_SIZE];
     int total_size = OUTPUT_SIZE + scheme->bv_len;
     char *temp_hash;
@@ -47,7 +48,7 @@ static int generate_hash(
     salt.bv_len = sizeof(saltinput);
     
     if (lutil_entropy((unsigned char *)salt.bv_val, salt.bv_len) < 0) {
-        _DEBUG("Error: Salt failed to generate");
+        BCRYPT_DEBUG("Entropy failed to generate\n");
         ber_memfree( salt.bv_val );
         return LUTIL_PASSWD_ERR;
     }
@@ -61,6 +62,7 @@ static int generate_hash(
             OUTPUT_SIZE
         ))
     {
+        BCRYPT_DEBUG("Salt failed to generate\n");
         return LUTIL_PASSWD_ERR;
     }
 
@@ -71,6 +73,7 @@ static int generate_hash(
             OUTPUT_SIZE
         ))
     {
+        BCRYPT_DEBUG("Password failed to generate\n");
         return LUTIL_PASSWD_ERR;
     }
 
@@ -94,9 +97,11 @@ static int chk_hash(
     const struct berval *cred,
     const char **text)
 {
+    BCRYPT_DEBUG("Initializing password check\n");
     char bcrypthash[OUTPUT_SIZE];
 
     if (!passwd->bv_val || passwd->bv_len > OUTPUT_SIZE) {
+        BCRYPT_DEBUG("Password is of incorrect length or doesn't exist\n");
         return LUTIL_PASSWD_ERR;
     }
 
@@ -122,13 +127,13 @@ static int chk_hash(
 int init_module(int argc, char *argv[]) {
 
 
-    _DEBUG("Loading bcrypt password plugin\n")
+    BCRYPT_DEBUG("Intializing bcrypt password plugin\n");
 
-    _DEBUG("Setting default work factor\n");
+    BCRYPT_DEBUG("Setting default work factor\n");
     workfactor = DEFAULT_WORKFACTOR;
 
     if (argc > 0) {
-        _DEBUG("Overwriting default work factor with provided work factor argument\n")
+        BCRYPT_DEBUG("Overwriting default work factor with provided work factor argument\n");
         int factor = atoi(argv[0]);
         if (factor >= MIN_WORKFACTOR && factor <= MAX_WORKFACTOR) {
             workfactor = factor;
