@@ -44,7 +44,7 @@ static int update_hash(
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
 
-    for (int i=0; i < sizeof(hashstring) < OUTPUT_ELEMENT_SIZE; i++)
+    for (int i=0; OUTPUT_ELEMENT_SIZE < sizeof(hashstring) > i; i++)
     {
         AC_MEMCPY(temp_hash, hashstring[i], sizeof(hashstring[i]));
         temp_hash += sizeof(hashstring[i]);
