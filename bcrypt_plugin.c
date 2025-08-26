@@ -28,6 +28,33 @@
 static struct berval bcryptscheme = BER_BVC("{BCRYPT}");
 static int workfactor;
 
+static int update_hash(
+    struct berval *hash,
+    const struct *scheme,
+    char bcrypthash)
+{
+    char *temp_hash;
+    int total_size = OUTPUT_SIZE + scheme->bv_len;
+    const char *hashstring[scheme->bv_val,bcrypthash];
+    
+    hash->bv_len = total_size;
+    temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
+
+    for (i=0; i < sizeof(hashstring) < 2; i++)
+    {
+        AC_MEMCPY(temp_hash, hashstring[i], sizeof(hashstring[i]));
+        temp_hash += sizeof(hashstring[i]);
+    }
+    
+    if (hash->bv_val == NULL) {
+        return 0;
+    }
+
+    temp_hash = '\0';
+
+    return LUTIL_PASSWD_OK;
+}
+
 static int generate_hash(
     const struct berval *scheme,
     const struct berval *passwd,
@@ -37,8 +64,6 @@ static int generate_hash(
 
     BCRYPT_DEBUG("Initializing bcrypt hash generation\n");
     char bcrypthash[OUTPUT_SIZE];
-    int total_size = OUTPUT_SIZE + scheme->bv_len;
-    char *temp_hash;
     char saltinput[SALT_SIZE];
     char gensaltoutput[SALT_OUTPUT_SIZE];
     char *userpass = passwd->bv_val;
@@ -77,17 +102,14 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    hash->bv_len = total_size;
-    temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
-
-    AC_MEMCPY(temp_hash, scheme->bv_val, scheme->bv_len);
-    temp_hash += scheme->bv_len;
-
-    AC_MEMCPY(temp_hash, bcrypthash, OUTPUT_SIZE);
-
-    hash->bv_val[hash->bv_len] = '\0';
-
-    return LUTIL_PASSWD_OK;
+    if (!update_hash(
+            hash,
+            scheme,
+            bcrypthash))
+    {
+        BCRYPT_DEBUG("Hash failed to update\n");
+        return LUTIL_PASSWD_ERR;
+    }
 
 }
 
