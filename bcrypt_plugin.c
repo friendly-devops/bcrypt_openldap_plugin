@@ -39,7 +39,7 @@ static int update_hash(
     char *hashstring[OUTPUT_ELEMENT_SIZE];
 
     hashstring[0] = scheme->bv_val;
-    hashstring[1] = bcrypthash;
+    hashstring[1] = &bcrypthash;
     
     hash->bv_len = total_size;
     temp_hash = hash->bv_val = (char *) ber_memalloc(hash->bv_len + 1);
