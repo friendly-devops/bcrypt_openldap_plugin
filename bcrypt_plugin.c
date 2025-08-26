@@ -29,7 +29,7 @@
 static struct berval bcryptscheme = BER_BVC("{BCRYPT}");
 static int workfactor;
 
-static int update_hash(
+static int _update_hash(
     struct berval *hash,
     const struct berval *scheme,
     char (*) bcrypthash)
@@ -106,7 +106,7 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
-    if (!update_hash(
+    if (!_update_hash(
             hash,
             scheme,
             &bcrypthash))
@@ -115,6 +115,7 @@ static int generate_hash(
         return LUTIL_PASSWD_ERR;
     }
 
+    return LUTIL_PASSWD_OK;
 }
 
 static int chk_hash(
